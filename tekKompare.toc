@@ -2,7 +2,9 @@
 
 ## Title: tekKompare
 ## Notes: Simple item compare tooltips
+## Author: Tekkub Stoutwrithe
+## X-Website: http://code.google.com/p/tekkub-wow/
+## X-Email: tekkub-wow@googlegroups.com
 ## X-Category: Interface Enhancements
 
-tekKompare.xml
 tekKompare.lua
