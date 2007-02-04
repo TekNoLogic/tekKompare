@@ -4,5 +4,5 @@
 ## Notes: Simple item compare tooltips
 ## X-Category: Interface Enhancements
 
-EQCompare.lua
-EQCompare.xml
+tekKompare.xml
+tekKompare.lua
