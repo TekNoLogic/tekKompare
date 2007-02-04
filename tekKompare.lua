@@ -1,157 +1,106 @@
 
-local INVTYPE_GUN="Gun"
-local INVTYPE_CROSSBOW="Crossbow"
-local INVTYPE_WAND="Wand"
-local INVTYPE_THROWN="Thrown"
-local INVTYPE_GUNPROJECTILE="Projectile"
-local INVTYPE_BOWPROJECTILE="Projectile"
+string.concat = strconcat
 
-
+local tekKompareTooltip1, tekKompareTooltip2
 local slots = {
-	[INVTYPE_HEAD]           = {1},
-	[INVTYPE_NECK]           = {2},
-	[INVTYPE_SHOULDER]       = {3},
-	[INVTYPE_BODY]           = {4},
-	[INVTYPE_CHEST]          = {5},
-	[INVTYPE_ROBE]           = {5},
-	[INVTYPE_WAIST]          = {6},
-	[INVTYPE_LEGS]           = {7},
-	[INVTYPE_FEET]           = {8},
-	[INVTYPE_WRIST]          = {9},
-	[INVTYPE_HAND]           = {10},
-	[INVTYPE_FINGER]         = {11,12},
-	[INVTYPE_TRINKET]        = {13,14},
-	[INVTYPE_CLOAK]          = {15},
-	[INVTYPE_WEAPON]         = {16,17},
-	[INVTYPE_2HWEAPON]       = {16,17},
-	[INVTYPE_WEAPONMAINHAND] = {16},
-	[INVTYPE_WEAPONOFFHAND]  = {17},
-	[INVTYPE_SHIELD]         = {17},
-	[INVTYPE_HOLDABLE]       = {17},
-	[INVTYPE_RANGED]         = {18},
-	[INVTYPE_RELIC]          = {18},
-	[INVTYPE_TABARD]         = {19},
-	-- need localization for following
-	[INVTYPE_GUN]={18},
-	[INVTYPE_CROSSBOW]={18},
-	[INVTYPE_WAND]={18},
-	[INVTYPE_THROWN]={18},
-	[INVTYPE_GUNPROJECTILE]={0},
-	[INVTYPE_BOWPROJECTILE]={0},
+	INVTYPE_GUNPROJECTILE  = 0,
+	INVTYPE_BOWPROJECTILE  = 0,
+	INVTYPE_HEAD           = 1,
+	INVTYPE_NECK           = 2,
+	INVTYPE_SHOULDER       = 3,
+	INVTYPE_BODY           = 4,
+	INVTYPE_CHEST          = 5,
+	INVTYPE_ROBE           = 5,
+	INVTYPE_WAIST          = 6,
+	INVTYPE_LEGS           = 7,
+	INVTYPE_FEET           = 8,
+	INVTYPE_WRIST          = 9,
+	INVTYPE_HAND           = 10,
+	INVTYPE_FINGER         = {11,12},
+	INVTYPE_TRINKET        = {13,14},
+	INVTYPE_CLOAK          = 15,
+	INVTYPE_WEAPON         = {16,17},
+	INVTYPE_2HWEAPON       = {16,17},
+	INVTYPE_WEAPONMAINHAND = 16,
+	INVTYPE_WEAPONOFFHAND  = 17,
+	INVTYPE_SHIELD         = 17,
+	INVTYPE_HOLDABLE       = 17,
+	INVTYPE_RANGED         = 18,
+	INVTYPE_RELIC          = 18,
+	INVTYPE_GUN            = 18,
+	INVTYPE_CROSSBOW       = 18,
+	INVTYPE_WAND           = 18,
+	INVTYPE_THROWN         = 18,
+	INVTYPE_TABARD         = 19,
 }
 
 
 local function GetInventorySlot(tooltip)
-	--possible texts starting at 2nd line. the first line is item name
-	for i=2,5 do
-		local text=getglobal(tooltip:GetName().."TextLeft"..i):GetText()
-		if text and slots[text] then
-			local match_inv = slots[text]
+	local _, link = tooltip:GetItem()
+	if not link then return end
+	local _, _, _, _, _, _, _, _, itemEquipLoc = GetItemInfo(link)
 
-			-- check used slot
-			local slot = {}
-			for _,v in ipairs(match_inv) do
-				local item = GetInventoryItemLink("player",v)
-				if item then tinsert(slot, v) end
-			end
-			return unpack(slot)
-		end
-	end
+	local s = slots[itemEquipLoc]
+	if not s then return end
+	if type(s) == "number" then return GetInventoryItemLink("player", s) and s
+	else return GetInventoryItemLink("player", s[1]) and s[1], GetInventoryItemLink("player", s[2]) and s[2] end
 end
 
 
-local orig1 = GameTooltip:GetScript("OnShow")
-GameTooltip:SetScript("OnShow", function(object, ...)
-	--check object if valid
-	if type(object)~="table" then if orig1 then return orig1(object, ...) end end
+local function SetTip(frame, slot, owner, anchor, align, scale)
+	if not slot then return end
 
-	--call origin script hook except ItemRefTooltip
-	--call this at first may fix a lot problem, and keep compat with other mods
-	if object ~= ItemRefTooltip and orig1 then orig1(object, ...) end
+	frame:SetClampedToScreen(true)
+	frame:SetOwner(owner, "ANCHOR_NONE")
+	frame:SetInventoryItem("player", slot)
+	frame:ClearAllPoints()
+	frame:SetScale(scale)
+	frame:SetPoint(anchor, owner, align)
+	frame:Show()
+end
 
+
+local function SetTips(frame, useown)
 	--bypass these frame, WorldFrame, player's paperdoll, weapon enchants
-	local frame=GetMouseFocus() and GetMouseFocus():GetName() or ""
-	if frame == "WorldFrame" or strfind(frame,"^Character.*Slot$") or strfind(frame,"^TempEnchant%d+$")	then return end
+	local f = GetMouseFocus() and GetMouseFocus():GetName() or ""
+	if f == "WorldFrame" or string.find(f, "^Character.*Slot$") or string.find(f, "^TempEnchant%d+$") then return end
 
 	--check if any matched inventory items
-	local slot1, slot2 = GetInventorySlot(object)
-	if not slot1 then if orig1 then return orig1(object, ...) end end
+	local slot1, slot2 = GetInventorySlot(frame)
+	if slot2 and not slot1 then slot1, slot2 = slot2, slot1
+	elseif not slot1 then return end
 
-	--use custom tooltip to display compare info for ItemRefTooltip.
-	--so it's stick display while mouse hover other things.
-	local tooltip
-	if object == ItemRefTooltip then
-		tooltip = "EQCompareTooltip"
-	else
-		tooltip = "ShoppingTooltip"
-	end
+	local tooltip1 = useown and tekKompareTooltip1 or ShoppingTooltip1
+	local tooltip2 = useown and tekKompareTooltip2 or ShoppingTooltip2
 
-	--place code copy from QuickCompare, correct anchor if tooltip is in right half of screen
-	local uibottom,uitop = UIParent:GetBottom(), UIParent:GetTop()
-	local anchor, align, anchorframe = "TOPLEFT", "TOPRIGHT", object
-	local scale, tipleft = object:GetScale(), object:GetLeft()
-	local dy = -10*scale
-	if tipleft and (tipleft*scale) >= (UIParent:GetRight()/2) then anchor, align = align, anchor end
+	local anchor1, anchor2 = "TOPLEFT", "TOPRIGHT"
+	local scale, tipright = frame:GetScale(), frame:GetRight()
+	if tipright and (tipright*scale) >= (UIParent:GetRight()/2) then anchor1, anchor2 = anchor2, anchor1 end
 
-	--display compare tooltip matched inv slot
-	for i=1,2 do
-		local invslot = select(i, slot1, slot2)
-		local shoptip = getglobal(tooltip.. i)
-		local shoptiptext = getglobal(tooltip.. i.. "TextLeft1")
+	SetTip(tooltip1, slot1, frame, anchor1, anchor2, scale)
+	SetTip(tooltip2, slot2, tooltip1, anchor1, anchor2, scale)
+end
 
-		shoptip:SetOwner(object, "ANCHOR_NONE")
-		shoptip:SetInventoryItem("player", invslot)
-		shoptip:SetScale(scale)
-		--reset tooltip point, so it can get the correct bottom and top position later.
-		shoptip:ClearAllPoints()
-		shoptip:SetPoint(anchor, anchorframe, align, 0, dy)
 
---~ 		--show Currently Equipped in lightyellow
---~ 		local oldtext = shoptiptext:GetText() or ""
---~ 		local newtext = LIGHTYELLOW_FONT_COLOR_CODE.. CURRENTLY_EQUIPPED.. FONT_COLOR_CODE_CLOSE.. "\n"
---~ 		shoptiptext:SetText(newtext.. oldtext)
---~ 		shoptiptext:SetJustifyH("LEFT")
-
-		--place code copy from QuickCompare, correct placement, don't go off screen
-		--coords get larger as move up: 0 at bottom, screen height at top
-		local bottom, top = shoptip:GetBottom(), shoptip:GetTop()
-		if bottom and bottom*scale-10 <= uibottom then
-			--10 for padding
-			dy = uibottom - bottom + (10*scale)
-		elseif top and ((top+32)*scale) >= uitop then
-			--32 for icon
-			top = (top+32) * scale
-			dy = uitop - top - 20
-		end
-		shoptip:ClearAllPoints()
-		shoptip:SetPoint(anchor, anchorframe, align, 0, dy)
-		shoptip:Show()
-
-		--last comparison tooltip becomes anchorframe for next comparison tooltip
-		anchorframe = shoptip
-		dy = 0
-	end
+local orig1 = GameTooltip:GetScript("OnTooltipSetItem")
+GameTooltip:SetScript("OnTooltipSetItem", function(frame, ...)
+	SetTips(frame)
+	if orig1 then return orig1(frame, ...) end
 end)
 
 
---~ 	self:SecureHook("SetItemRef")
---~ --[[ Hook SetItemRef, for display compare tooltip while clicked hyperlink in ChatFrame ]]--
---~ function EQCompare:SetItemRef(link, text, button)
---~ 	--only process tooltip for item
---~ 	if strfind(link,"^item") then
---~ 		--because SetItemRef will not display item tooltip while holding shift and ctrl key
+local orig2 = ItemRefTooltip:GetScript("OnTooltipSetItem")
+ItemRefTooltip:SetScript("OnTooltipSetItem", function(frame, ...)
+	if not tekKompareTooltip1 then
+		tekKompareTooltip1 = CreateFrame("GameTooltip", "tekKompareTooltip1", ItemRefTooltip, "ShoppingTooltipTemplate")
+		tekKompareTooltip2 = CreateFrame("GameTooltip", "tekKompareTooltip2", ItemRefTooltip, "ShoppingTooltipTemplate")
+		tekKompareTooltip1:SetFrameStrata("TOOLTIP")
+		tekKompareTooltip2:SetFrameStrata("TOOLTIP")
+	end
 
---~ 		EQCompareTooltip1:Hide()
---~ 		EQCompareTooltip2:Hide()
---~ 		self:Tooltip_OnShow(ItemRefTooltip)
---~ 	end
---~ end
+	SetTips(frame, true)
+	if orig2 then return orig2(frame, ...) end
+end)
 
 
---~ local orig2 = ItemRefTooltip:GetScript("OnHide")
---~ ItemRefTooltip:SetScript("OnHide", function(...)
---~ 	EQCompareTooltip1:Hide()
---~ 	EQCompareTooltip2:Hide()
---~ 	if orig2 then return orig2(...) end
---~ end
 
