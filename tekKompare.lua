@@ -47,14 +47,13 @@ local function GetInventorySlot(tooltip)
 end
 
 
-local function SetTip(frame, slot, owner, anchor, align, scale)
+local function SetTip(frame, slot, owner, anchor, align)
 	if not slot then return end
 
 	frame:SetClampedToScreen(true)
 	frame:SetOwner(owner, "ANCHOR_NONE")
 	frame:SetInventoryItem("player", slot)
 	frame:ClearAllPoints()
-	frame:SetScale(scale)
 	frame:SetPoint(anchor, owner, align)
 	frame:Show()
 end
@@ -70,15 +69,13 @@ local function SetTips(frame, useown)
 	if slot2 and not slot1 then slot1, slot2 = slot2, slot1
 	elseif not slot1 then return end
 
-	local tooltip1 = useown and tekKompareTooltip1 or ShoppingTooltip1
-	local tooltip2 = useown and tekKompareTooltip2 or ShoppingTooltip2
+	local tooltip1, tooltip2 = useown and tekKompareTooltip1 or ShoppingTooltip1, useown and tekKompareTooltip2 or ShoppingTooltip2
 
-	local anchor1, anchor2 = "TOPLEFT", "TOPRIGHT"
-	local scale, tipright = frame:GetScale(), frame:GetRight()
-	if tipright and (tipright*scale) >= (UIParent:GetRight()/2) then anchor1, anchor2 = anchor2, anchor1 end
+	local anchor1, anchor2, tipright = "TOPLEFT", "TOPRIGHT", frame:GetRight()
+	if tipright and (tipright * frame:GetScale()) >= (UIParent:GetRight()/2) then anchor1, anchor2 = anchor2, anchor1 end
 
-	SetTip(tooltip1, slot1, frame, anchor1, anchor2, scale)
-	SetTip(tooltip2, slot2, tooltip1, anchor1, anchor2, scale)
+	SetTip(tooltip1, slot1, frame, anchor1, anchor2)
+	SetTip(tooltip2, slot2, tooltip1, anchor1, anchor2)
 end
 
 
