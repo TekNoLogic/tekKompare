@@ -48,7 +48,7 @@ local function CreateTip(name, parent)
 	L2:SetFontObject(GameFontHighlightSmall)
 
 	local ce = t:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
-	ce:SetText("|cff808080Currently Equipped")
+	ce:SetText("|cff808080".. CURRENTLY_EQUIPPED)
 
 	ce:SetPoint("TOPLEFT", t, "TOPLEFT", 10, -10)
 	L1:SetPoint("TOPLEFT", ce, "BOTTOMLEFT", 0, -2)
@@ -62,14 +62,13 @@ local function GetInventorySlot(tooltip)
 	local _, _, _, _, _, _, _, _, itemEquipLoc = GetItemInfo(link)
 
 	local s = slots[itemEquipLoc]
-	if not s then return end
-	if type(s) == "number" then return GetInventoryItemLink("player", s) and s
-	else return GetInventoryItemLink("player", s[1]) and s[1], GetInventoryItemLink("player", s[2]) and s[2] end
+	if type(s) == "table" then return unpack(s)
+	else return s end
 end
 
 
 local function SetTip(frame, slot, owner, anchor1, anchor2)
-	if not slot then return end
+	if not slot or not GetInventoryItemLink("player", slot) then return end
 
 	frame:SetOwner(owner, "ANCHOR_NONE")
 	frame:SetInventoryItem("player", slot)
