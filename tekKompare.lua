@@ -1,7 +1,8 @@
 
 string.concat = strconcat
 
-local tekKompareTooltip1, tekKompareTooltip2
+local tekKompareTooltip1, tekKompareTooltip2, tekKompareTooltip3, tekKompareTooltip4
+local ShoppingTooltip1 = ShoppingTooltip1
 local slots = {
 	INVTYPE_GUNPROJECTILE  = 0,
 	INVTYPE_BOWPROJECTILE  = 0,
@@ -35,6 +36,26 @@ local slots = {
 }
 
 
+local function CreateTip(name, parent)
+	local t = CreateFrame("GameTooltip", name, parent, "ShoppingTooltipTemplate")
+	t:SetFrameStrata("TOOLTIP")
+	t:SetClampedToScreen(true)
+
+	local _G = getfenv(0)
+	local L1, R1, L2 = _G[name.."TextLeft1"], _G[name.."TextRight1"], _G[name.."TextLeft2"]
+	L1:SetFontObject(GameFontNormal)
+	R1:SetFontObject(GameFontNormal)
+	L2:SetFontObject(GameFontHighlightSmall)
+
+	local ce = t:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+	ce:SetText("|cff808080Currently Equipped")
+
+	ce:SetPoint("TOPLEFT", t, "TOPLEFT", 10, -10)
+	L1:SetPoint("TOPLEFT", ce, "BOTTOMLEFT", 0, -2)
+	return t
+end
+
+
 local function GetInventorySlot(tooltip)
 	local _, link = tooltip:GetItem()
 	if not link then return end
@@ -47,19 +68,19 @@ local function GetInventorySlot(tooltip)
 end
 
 
-local function SetTip(frame, slot, owner, anchor, align)
+local function SetTip(frame, slot, owner, anchor1, anchor2)
 	if not slot then return end
 
-	frame:SetClampedToScreen(true)
 	frame:SetOwner(owner, "ANCHOR_NONE")
 	frame:SetInventoryItem("player", slot)
+	frame:AddLine(" ") -- Makes the backdrop compensate for the header, I don't know a cleaner way to do this...
 	frame:ClearAllPoints()
-	frame:SetPoint(anchor, owner, align)
+	frame:SetPoint(anchor1, owner, anchor2)
 	frame:Show()
 end
 
 
-local function SetTips(frame, useown)
+local function SetTips(frame, tooltip1, tooltip2)
 	--bypass these frame, WorldFrame, player's paperdoll, weapon enchants
 	local f = GetMouseFocus() and GetMouseFocus():GetName() or ""
 	if f == "WorldFrame" or string.find(f, "^Character.*Slot$") or string.find(f, "^TempEnchant%d+$") then return end
@@ -68,8 +89,6 @@ local function SetTips(frame, useown)
 	local slot1, slot2 = GetInventorySlot(frame)
 	if slot2 and not slot1 then slot1, slot2 = slot2, slot1
 	elseif not slot1 then return end
-
-	local tooltip1, tooltip2 = useown and tekKompareTooltip1 or ShoppingTooltip1, useown and tekKompareTooltip2 or ShoppingTooltip2
 
 	local anchor1, anchor2, tipright = "TOPLEFT", "TOPRIGHT", frame:GetRight()
 	if tipright and (tipright * frame:GetScale()) >= (UIParent:GetRight()/2) then anchor1, anchor2 = anchor2, anchor1 end
@@ -81,23 +100,31 @@ end
 
 local orig1 = GameTooltip:GetScript("OnTooltipSetItem")
 GameTooltip:SetScript("OnTooltipSetItem", function(frame, ...)
-	SetTips(frame)
+	if not tekKompareTooltip1 then
+		tekKompareTooltip1 = CreateTip("tekKompareTooltip1", GameTooltip)
+		tekKompareTooltip2 = CreateTip("tekKompareTooltip2", GameTooltip)
+	end
+
+	if not ShoppingTooltip1:IsVisible() then SetTips(frame, tekKompareTooltip1, tekKompareTooltip2) end
 	if orig1 then return orig1(frame, ...) end
 end)
 
 
 local orig2 = ItemRefTooltip:GetScript("OnTooltipSetItem")
 ItemRefTooltip:SetScript("OnTooltipSetItem", function(frame, ...)
-	if not tekKompareTooltip1 then
-		tekKompareTooltip1 = CreateFrame("GameTooltip", "tekKompareTooltip1", ItemRefTooltip, "ShoppingTooltipTemplate")
-		tekKompareTooltip2 = CreateFrame("GameTooltip", "tekKompareTooltip2", ItemRefTooltip, "ShoppingTooltipTemplate")
-		tekKompareTooltip1:SetFrameStrata("TOOLTIP")
-		tekKompareTooltip2:SetFrameStrata("TOOLTIP")
+	if not tekKompareTooltip3 then
+		tekKompareTooltip3 = CreateTip("tekKompareTooltip3", ItemRefTooltip)
+		tekKompareTooltip4 = CreateTip("tekKompareTooltip4", ItemRefTooltip)
 	end
 
-	SetTips(frame, true)
+	SetTips(frame, tekKompareTooltip3, tekKompareTooltip4)
 	if orig2 then return orig2(frame, ...) end
 end)
 
 
-
+local orig3 = ShoppingTooltip1:GetScript("OnShow")
+ShoppingTooltip1:SetScript("OnTooltipSetItem", function(...)
+	tekKompareTooltip1:Hide()
+	tekKompareTooltip2:Hide()
+	if orig3 then return orig3(...) end
+end)
