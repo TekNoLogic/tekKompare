@@ -4,6 +4,7 @@ string.concat = strconcat
 local tekKompareTooltip1, tekKompareTooltip2, tekKompareTooltip3, tekKompareTooltip4
 local ShoppingTooltip1 = ShoppingTooltip1
 local slots = {
+	INVTYPE_AMMO           = 0,
 	INVTYPE_GUNPROJECTILE  = 0,
 	INVTYPE_BOWPROJECTILE  = 0,
 	INVTYPE_HEAD           = 1,
@@ -27,6 +28,7 @@ local slots = {
 	INVTYPE_SHIELD         = 17,
 	INVTYPE_HOLDABLE       = 17,
 	INVTYPE_RANGED         = 18,
+	INVTYPE_RANGEDRIGHT    = 18,
 	INVTYPE_RELIC          = 18,
 	INVTYPE_GUN            = 18,
 	INVTYPE_CROSSBOW       = 18,
