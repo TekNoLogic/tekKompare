@@ -91,8 +91,8 @@ local function SetTips(frame, tooltip1, tooltip2)
 	if slot2 and not slot1 then slot1, slot2 = slot2, slot1
 	elseif not slot1 then return end
 
-	local anchor1, anchor2, tipright = "TOPLEFT", "TOPRIGHT", frame:GetRight()
-	if tipright and (tipright * frame:GetScale()) >= (UIParent:GetRight()/2) then anchor1, anchor2 = anchor2, anchor1 end
+	local anchor1, anchor2, tipmid = "TOPLEFT", "TOPRIGHT", (frame:GetLeft()+frame:GetRight())/2
+	if tipmid and (tipmid * frame:GetScale()) >= (UIParent:GetRight()/2) then anchor1, anchor2 = anchor2, anchor1 end
 
 	SetTip(tooltip1, slot1, frame, anchor1, anchor2)
 	SetTip(tooltip2, slot2, tooltip1, anchor1, anchor2)
