@@ -1,6 +1,4 @@
 
-string.concat = strconcat
-
 local tekKompareTooltip1, tekKompareTooltip2, tekKompareTooltip3, tekKompareTooltip4
 local ShoppingTooltip1 = ShoppingTooltip1
 local slots = {
@@ -36,7 +34,8 @@ local slots = {
 	INVTYPE_THROWN         = 18,
 	INVTYPE_TABARD         = 19,
 }
-
+--~ local validator = IsShiftKeyDown
+local validator = function() return true end
 
 local function CreateTip(name, parent)
 	local t = CreateFrame("GameTooltip", name, parent, "ShoppingTooltipTemplate")
@@ -70,7 +69,7 @@ end
 
 
 local function SetTip(frame, slot, owner, anchor1, anchor2)
-	if not slot or not GetInventoryItemLink("player", slot) then return end
+	if not slot or not GetInventoryItemLink("player", slot) or not validator() then return end
 
 	frame:SetOwner(owner, "ANCHOR_NONE")
 	frame:SetInventoryItem("player", slot)
