@@ -8,3 +8,4 @@
 ## X-Category: Interface Enhancements
 
 tekKompare.lua
+HoverTips.lua
