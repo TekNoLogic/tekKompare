@@ -100,6 +100,8 @@ end
 
 local orig1 = GameTooltip:GetScript("OnTooltipSetItem")
 GameTooltip:SetScript("OnTooltipSetItem", function(frame, ...)
+	assert(frame, "arg 1 is nil, someone isn't hooking correctly")
+
 	if not tekKompareTooltip1 then
 		tekKompareTooltip1 = CreateTip("tekKompareTooltip1", GameTooltip)
 		tekKompareTooltip2 = CreateTip("tekKompareTooltip2", GameTooltip)
