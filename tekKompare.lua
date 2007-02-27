@@ -127,7 +127,7 @@ end)
 
 
 local orig3 = ShoppingTooltip1:GetScript("OnShow")
-ShoppingTooltip1:SetScript("OnTooltipSetItem", function(...)
+ShoppingTooltip1:SetScript("OnShow", function(...)
 	tekKompareTooltip1:Hide()
 	tekKompareTooltip2:Hide()
 	if orig3 then return orig3(...) end
