@@ -5,7 +5,7 @@ local GameTooltip = GameTooltip
 
 local function OnHyperlinkEnter(frame, link, ...)
 	if string.find(link, "^item") or string.find(link, "^enchant") then
-		GameTooltip:SetOwner(frame, "ANCHOR_TOPRIGHT")
+		GameTooltip:SetOwner(frame, "ANCHOR_TOPLEFT")
 		GameTooltip:SetHyperlink(link)
 		GameTooltip:Show()
 	end
