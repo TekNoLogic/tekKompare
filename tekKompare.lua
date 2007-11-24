@@ -21,7 +21,7 @@ local function SetTips(link, owner, tooltip1, tooltip2)
 
 	if item1 then
 		tooltip1:ClearAllPoints()
-		tooltip1:SetPoint(anchor1, owner, anchor2)
+		tooltip1:SetPoint(anchor1, owner, anchor2, 0, -10)
 		tooltip1:Show()
 
 		if item2 then
