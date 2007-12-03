@@ -61,3 +61,11 @@ ItemRefTooltip:SetScript("OnTooltipSetItem", function(frame, ...)
 end)
 
 
+-- Cowtip Condom
+-- We'll let CowTip fuck us, but we don't want to catch anything
+if select(2, GetAddOnInfo("CowTip")) then
+	local function nullfunc() end
+	ShoppingTooltip1.SetBackdrop, ShoppingTooltip2.SetBackdrop = nullfunc, nullfunc
+end
+
+
