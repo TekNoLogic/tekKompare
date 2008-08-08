@@ -1,0 +1,5 @@
+2.4.0.2-Release
+    Make hovertips handle more types, thanks Arrowmaster
+
+2.3.3.1-Release
+    Removing Cowtip Condom, ckk claims he's clean now
