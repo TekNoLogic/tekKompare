@@ -2,7 +2,7 @@
 local orig1, orig2 = {}, {}
 local GameTooltip = GameTooltip
 
-local linktypes = {enchant = true, spell = true, quest = true, unit = true, talent = true}
+local linktypes = {enchant = true, spell = true, quest = true, unit = true, talent = true, achievement = true}
 
 
 local function OnHyperlinkEnter(frame, link, ...)
