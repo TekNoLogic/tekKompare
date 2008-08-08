@@ -3,7 +3,7 @@
 ## Title: tekKompare
 ## Notes: Simple item compare tooltips
 ## Author: Tekkub Stoutwrithe
-## Version: Alpha
+## Version: 3.0.1.3
 ## X-Website: http://code.google.com/p/tekkub-wow/
 ## X-Email: tekkub-wow@googlegroups.com
 ## X-Category: Interface Enhancements
