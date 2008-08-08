@@ -2,9 +2,12 @@
 local orig1, orig2 = {}, {}
 local GameTooltip = GameTooltip
 
+local linktypes = {enchant = true, spell = true, quest = true, unit = true, talent = true}
+
 
 local function OnHyperlinkEnter(frame, link, ...)
-	if string.find(link, "^item") or string.find(link, "^enchant") or string.find(link, "^spell") or string.find(link, "^quest") or string.find(link, "^unit") then
+	local linktype = link:match("^([^:]+)")
+	if linktype and linktypes[linktype] then
 		GameTooltip:SetOwner(frame, "ANCHOR_TOPLEFT")
 		GameTooltip:SetHyperlink(link)
 		GameTooltip:Show()
