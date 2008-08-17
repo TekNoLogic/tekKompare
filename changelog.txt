@@ -1,3 +1,7 @@
+3.0.1.4-Release
+    Update TOC metadata
+    How the fuck did I miss "item"?
+
 3.0.1.3-Release
     Add achievements to hovertips
     Allow for talent hovertips
