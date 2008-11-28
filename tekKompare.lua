@@ -1,18 +1,20 @@
 
 
-local tekKompareTooltip1, tekKompareTooltip2
-local ShoppingTooltip1, ShoppingTooltip2 = ShoppingTooltip1, ShoppingTooltip2
+local tekKompareTooltip1, tekKompareTooltip2, tekKompareTooltip3
+local ShoppingTooltip1, ShoppingTooltip2, ShoppingTooltip3 = ShoppingTooltip1, ShoppingTooltip2, ShoppingTooltip3
 
 
-local function SetTips(link, owner, tooltip1, tooltip2)
+local function SetTips(link, owner, tooltip1, tooltip2, tooltip3)
 	--bypass these frames: WorldFrame, player's paperdoll, weapon enchants
 	local f = GetMouseFocus() and GetMouseFocus():GetName() or ""
 	if not link or f == "WorldFrame" or string.find(f, "^Character.*Slot$") or string.find(f, "^TempEnchant%d+$") then return end
 
 	tooltip1:SetOwner(owner, "ANCHOR_NONE")
 	tooltip2:SetOwner(owner, "ANCHOR_NONE")
-	local item1, item2 = tooltip1:SetHyperlinkCompareItem(link, 1), tooltip2:SetHyperlinkCompareItem(link, 2)
-	if not item1 and not item2 then return end
+	tooltip3:SetOwner(owner, "ANCHOR_NONE")
+	local item1, item2, item3 = tooltip1:SetHyperlinkCompareItem(link, 1), tooltip2:SetHyperlinkCompareItem(link, 2), tooltip3:SetHyperlinkCompareItem(link, 3)
+	if not item1 and not item2 and not item3 then return end
+	if item3 and not item2 then tooltip2, tooltip3, item2, item3 = tooltip3, tooltip2, true, nil end
 	if item2 and not item1 then tooltip1, tooltip2, item1, item2 = tooltip2, tooltip1, true, nil end
 
 	local left, right, anchor1, anchor2 = owner:GetLeft(), owner:GetRight(), "TOPLEFT", "TOPRIGHT"
@@ -28,6 +30,12 @@ local function SetTips(link, owner, tooltip1, tooltip2)
 			tooltip2:ClearAllPoints()
 			tooltip2:SetPoint(anchor1, tooltip1, anchor2)
 			tooltip2:Show()
+			
+			if item3 then
+				tooltip3:ClearAllPoints()
+				tooltip3:SetPoint(anchor1, tooltip2, anchor2)
+				tooltip3:Show()
+			end
 		end
 	end
 end
@@ -38,7 +46,7 @@ GameTooltip:SetScript("OnTooltipSetItem", function(frame, ...)
 	assert(frame, "arg 1 is nil, someone isn't hooking correctly")
 
 	local _, link = frame:GetItem()
-	if not ShoppingTooltip1:IsVisible() then SetTips(link, frame, ShoppingTooltip1, ShoppingTooltip2) end
+	if not ShoppingTooltip1:IsVisible() then SetTips(link, frame, ShoppingTooltip1, ShoppingTooltip2, ShoppingTooltip3) end
 	if orig1 then return orig1(frame, ...) end
 end)
 
@@ -53,9 +61,13 @@ ItemRefTooltip:SetScript("OnTooltipSetItem", function(frame, ...)
 		tekKompareTooltip2 = CreateFrame("GameTooltip", "tekKompareTooltip2", frame, "ShoppingTooltipTemplate")
 		tekKompareTooltip2:SetFrameStrata("TOOLTIP")
 		tekKompareTooltip2:SetClampedToScreen(true)
+		
+		tekKompareTooltip3 = CreateFrame("GameTooltip", "tekKompareTooltip3", frame, "ShoppingTooltipTemplate")
+		tekKompareTooltip3:SetFrameStrata("TOOLTIP")
+		tekKompareTooltip3:SetClampedToScreen(true)
 	end
 
  	local _, link = frame:GetItem()
-	SetTips(link, frame, tekKompareTooltip1, tekKompareTooltip2)
+	SetTips(link, frame, tekKompareTooltip1, tekKompareTooltip2, tekKompareTooltip3)
 	if orig2 then return orig2(frame, ...) end
 end)
