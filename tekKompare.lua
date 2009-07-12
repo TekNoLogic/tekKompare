@@ -1,7 +1,6 @@
 
-
-local tekKompareTooltip1, tekKompareTooltip2, tekKompareTooltip3
 local ShoppingTooltip1, ShoppingTooltip2, ShoppingTooltip3 = ShoppingTooltip1, ShoppingTooltip2, ShoppingTooltip3
+local ItemRefShoppingTooltip1, ItemRefShoppingTooltip2, ItemRefShoppingTooltip3 = ItemRefShoppingTooltip1, ItemRefShoppingTooltip2, ItemRefShoppingTooltip3
 
 
 local function SetTips(link, owner, tooltip1, tooltip2, tooltip3)
@@ -30,7 +29,7 @@ local function SetTips(link, owner, tooltip1, tooltip2, tooltip3)
 			tooltip2:ClearAllPoints()
 			tooltip2:SetPoint(anchor1, tooltip1, anchor2)
 			tooltip2:Show()
-			
+
 			if item3 then
 				tooltip3:ClearAllPoints()
 				tooltip3:SetPoint(anchor1, tooltip2, anchor2)
@@ -53,21 +52,7 @@ end)
 
 local orig2 = ItemRefTooltip:GetScript("OnTooltipSetItem")
 ItemRefTooltip:SetScript("OnTooltipSetItem", function(frame, ...)
-	if not tekKompareTooltip1 then
-		tekKompareTooltip1 = CreateFrame("GameTooltip", "tekKompareTooltip1", frame, "ShoppingTooltipTemplate")
-		tekKompareTooltip1:SetFrameStrata("TOOLTIP")
-		tekKompareTooltip1:SetClampedToScreen(true)
-
-		tekKompareTooltip2 = CreateFrame("GameTooltip", "tekKompareTooltip2", frame, "ShoppingTooltipTemplate")
-		tekKompareTooltip2:SetFrameStrata("TOOLTIP")
-		tekKompareTooltip2:SetClampedToScreen(true)
-		
-		tekKompareTooltip3 = CreateFrame("GameTooltip", "tekKompareTooltip3", frame, "ShoppingTooltipTemplate")
-		tekKompareTooltip3:SetFrameStrata("TOOLTIP")
-		tekKompareTooltip3:SetClampedToScreen(true)
-	end
-
- 	local _, link = frame:GetItem()
-	SetTips(link, frame, tekKompareTooltip1, tekKompareTooltip2, tekKompareTooltip3)
+˝	local _, link = frame:GetItem()
+	SetTips(link, frame, ItemRefShoppingTooltip1, ItemRefShoppingTooltip2, ItemRefShoppingTooltip3)
 	if orig2 then return orig2(frame, ...) end
 end)
