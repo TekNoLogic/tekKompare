@@ -52,7 +52,7 @@ end)
 
 local orig2 = ItemRefTooltip:GetScript("OnTooltipSetItem")
 ItemRefTooltip:SetScript("OnTooltipSetItem", function(frame, ...)
-˝	local _, link = frame:GetItem()
+	local _, link = frame:GetItem()
 	SetTips(link, frame, ItemRefShoppingTooltip1, ItemRefShoppingTooltip2, ItemRefShoppingTooltip3)
 	if orig2 then return orig2(frame, ...) end
 end)
