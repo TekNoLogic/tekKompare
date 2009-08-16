@@ -1,3 +1,8 @@
+3.2.0.6-Beta
+    Move to new itemref compare tips for 3.2
+    Use all three compare frames (even though the third is never used)
+    WTF was that thing?
+
 3.0.3.5-Release
     Hovertips for glyphs!
 
