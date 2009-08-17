@@ -56,3 +56,18 @@ ItemRefTooltip:SetScript("OnTooltipSetItem", function(frame, ...)
 	SetTips(link, frame, ItemRefShoppingTooltip1, ItemRefShoppingTooltip2, ItemRefShoppingTooltip3)
 	if orig2 then return orig2(frame, ...) end
 end)
+
+
+-- Don't let ItemRefTooltip fuck with the compare tips
+ItemRefTooltip:SetScript("OnEnter", nil)
+ItemRefTooltip:SetScript("OnLeave", nil)
+ItemRefTooltip:SetScript("OnDragStart", function(self)
+	ItemRefShoppingTooltip1:Hide(); ItemRefShoppingTooltip2:Hide(); ItemRefShoppingTooltip3:Hide()
+	self:StartMoving()
+end)
+ItemRefTooltip:SetScript("OnDragStop", function(self)
+	self:StopMovingOrSizing()
+	ValidateFramePosition(self)
+	local _, link = self:GetItem()
+	SetTips(link, self, ItemRefShoppingTooltip1, ItemRefShoppingTooltip2, ItemRefShoppingTooltip3)
+end)
