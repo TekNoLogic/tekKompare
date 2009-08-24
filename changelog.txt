@@ -1,3 +1,6 @@
+3.2.0.7-Beta
+    Don't let ItemRefTooltip fuck with the compare tips
+
 3.2.0.6-Beta
     Move to new itemref compare tips for 3.2
     Use all three compare frames (even though the third is never used)
