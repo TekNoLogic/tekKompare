@@ -1,4 +1,4 @@
-## Interface: 30300
+## Interface: 40000
 
 ## Title: tekKompare
 ## Notes: Simple item compare tooltips
