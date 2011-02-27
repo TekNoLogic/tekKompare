@@ -1,3 +1,6 @@
+4.0.0.9-Release
+    I've never seen an instancelock tip, but whatever
+
 3.3.0.8-Release
     Forgot about moving the itemref tooltip
 
