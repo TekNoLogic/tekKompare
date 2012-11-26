@@ -1,9 +1,17 @@
 
+local myname, ns = ...
+
+
 local orig1, orig2 = {}, {}
 local GameTooltip = GameTooltip
 
 local linktypes = {item = true, enchant = true, spell = true, quest = true, unit = true, talent = true, achievement = true, glyph = true, instancelock = true}
 
+
+local function ShowBattlePetTooltip(frame, pre, ...)
+	GameTooltip:SetOwner(frame, "ANCHOR_TOPLEFT")
+	BattlePetToolTip_Show(ns.tonumber_all(...))
+end
 
 local function OnHyperlinkEnter(frame, link, ...)
 	local linktype = link:match("^([^:]+)")
@@ -11,6 +19,8 @@ local function OnHyperlinkEnter(frame, link, ...)
 		GameTooltip:SetOwner(frame, "ANCHOR_TOPLEFT")
 		GameTooltip:SetHyperlink(link)
 		GameTooltip:Show()
+	elseif linktype and linktype == 'battlepet' then
+		ShowBattlePetTooltip(frame, strsplit(":", link))
 	end
 
 	if orig1[frame] then return orig1[frame](frame, link, ...) end
@@ -18,6 +28,7 @@ end
 
 local function OnHyperlinkLeave(frame, ...)
 	GameTooltip:Hide()
+	BattlePetTooltip:Hide()
 	if orig2[frame] then return orig2[frame](frame, ...) end
 end
 
