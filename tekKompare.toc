@@ -11,7 +11,7 @@
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: delayed
 
-tonumber_all.lua
+externals/tonumber_all.lua
 
 tekKompare.lua
 HoverTips.lua
