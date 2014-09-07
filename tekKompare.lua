@@ -3,11 +3,11 @@
 SetCVar("alwaysCompareItems", 1)
 
 
-local orig2 = ItemRefTooltip:GetScript("OnTooltipSetItem")
+local orig = ItemRefTooltip:GetScript("OnTooltipSetItem")
 ItemRefTooltip:SetScript("OnTooltipSetItem", function(self, ...)
 	GameTooltip_ShowCompareItem(self, 1)
 	self.comparing = true
-	if orig2 then return orig2(self, ...) end
+	if orig then return orig(self, ...) end
 end)
 
 
