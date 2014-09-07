@@ -17,6 +17,7 @@ ItemRefTooltip:SetScript("OnLeave", nil)
 ItemRefTooltip:SetScript("OnDragStart", function(self)
 	ItemRefShoppingTooltip1:Hide()
 	ItemRefShoppingTooltip2:Hide()
+	if ItemRefShoppingTooltip3 then ItemRefShoppingTooltip3:Hide() end
 	self:StartMoving()
 end)
 ItemRefTooltip:SetScript("OnDragStop", function(self)
