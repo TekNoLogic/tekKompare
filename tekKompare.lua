@@ -1,9 +1,6 @@
 
-local orig1 = GameTooltip:GetScript("OnTooltipSetItem")
-GameTooltip:SetScript("OnTooltipSetItem", function(self, ...)
-	if not ShoppingTooltip1:IsVisible() and not self:IsEquippedItem() then GameTooltip_ShowCompareItem(self, 1) end
-	if orig1 then return orig1(self, ...) end
-end)
+-- Force the CVar to the setting we want
+SetCVar("alwaysCompareItems", 1)
 
 
 local orig2 = ItemRefTooltip:GetScript("OnTooltipSetItem")
