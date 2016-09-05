@@ -1,9 +1,9 @@
-## Interface: 40000
+## Interface: 70000
 
 ## Title: tekKompare
 ## Notes: Simple item compare tooltips
 ## Author: Tekkub Stoutwrithe
-## Version: Alpha
+## Version: Release
 ## X-Website: http://www.tekkub.net/
 ## X-Email: tekkub-wow@googlegroups.com
 ## X-Category: Interface Enhancements
